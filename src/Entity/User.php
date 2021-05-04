@@ -94,6 +94,11 @@ class User
      */
     private $games;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=MessageRoom::class, mappedBy="users")
+     */
+    private $messageRooms;
+
     public function __construct()
     {
         $this->userInvoices = new ArrayCollection();
@@ -101,6 +106,7 @@ class User
         $this->games = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
+        $this->messageRooms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -319,6 +325,33 @@ class User
     {
         if ($this->games->removeElement($game)) {
             $game->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MessageRoom[]
+     */
+    public function getMessageRooms(): Collection
+    {
+        return $this->messageRooms;
+    }
+
+    public function addMessageRoom(MessageRoom $messageRoom): self
+    {
+        if (!$this->messageRooms->contains($messageRoom)) {
+            $this->messageRooms[] = $messageRoom;
+            $messageRoom->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageRoom(MessageRoom $messageRoom): self
+    {
+        if ($this->messageRooms->removeElement($messageRoom)) {
+            $messageRoom->removeUser($this);
         }
 
         return $this;
