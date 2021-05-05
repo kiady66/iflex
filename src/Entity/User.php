@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -14,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -98,6 +99,16 @@ class User
      * @ORM\ManyToMany(targetEntity=MessageRoom::class, mappedBy="users")
      */
     private $messageRooms;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $roles = [];
 
     public function __construct()
     {
@@ -356,4 +367,41 @@ class User
 
         return $this;
     }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+
+    public function getSalt()
+    {
+        //TODO
+    }
+
+    public function eraseCredentials()
+    {
+        //TODO
+    }
+
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+
 }
