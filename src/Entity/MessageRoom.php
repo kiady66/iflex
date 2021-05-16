@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\MessageRoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Entity\Message;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -92,7 +93,6 @@ class MessageRoom
                 $message->setMessageRoom(null);
             }
         }
-
         return $this;
     }
 }

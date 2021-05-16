@@ -39,6 +39,7 @@ class AppFixtures extends Fixture
                     ->setCity($faker->city)
                     ->setPostalcode($faker->postcode)
                     ->setEmail($faker->email)
+                    ->setUsername($faker->userName)
                     ->setAddress($faker->address);
                 $manager->persist($user);
                 $manager->flush();
