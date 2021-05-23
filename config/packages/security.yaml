@@ -2,18 +2,22 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         users_in_memory: { memory: null }
-        users:
-            name: users_provider
+        app_user_provider:
+            name: app_user_provider
             entity:
                 class: App\Entity\User
                 property: username
     firewalls:
+        refresh:
+            pattern: ^/api/token/refresh
+            stateless: true
+            anonymous: true
         login:
             pattern: ^/api/login
             stateless: true
             anonymous: true
             json_login:
-                provider: 'users_provider'
+                provider: 'app_user_provider'
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
@@ -23,7 +27,7 @@ security:
             stateless: true
             anonymous: true
             guard:
-                provider: 'users_provider'
+                provider: 'app_user_provider'
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
         dev:
