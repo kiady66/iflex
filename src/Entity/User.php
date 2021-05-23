@@ -11,10 +11,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  */
+#[ApiResource(
+    security: 'is_granted("ROLE_ADMIN")',
+    collectionOperations: [],
+    itemOperations: [
+        'get' => []
+    ]
+)]
 class User implements UserInterface
 {
     /**
