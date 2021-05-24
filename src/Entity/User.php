@@ -126,6 +126,23 @@ class User implements UserInterface
      */
     private $files;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="client", orphanRemoval=true)
+     */
+    private $userOrders;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Invitation::class, mappedBy="sentBy", orphanRemoval=true)
+     */
+    private $invitationsCreated;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=invitation::class, inversedBy="peopleWhoJoined")
+     */
+    private $invitationsReceived;
+
+
+
     public function __construct()
     {
         $this->userInvoices = new ArrayCollection();
@@ -136,6 +153,9 @@ class User implements UserInterface
         $this->messageRooms = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->files = new ArrayCollection();
+        $this->userOrders = new ArrayCollection();
+        $this->invitationsCreated = new ArrayCollection();
+        $this->invitationsReceived = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -481,5 +501,88 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|UserOrder[]
+     */
+    public function getUserOrders(): Collection
+    {
+        return $this->userOrders;
+    }
+
+    public function addUserOrder(UserOrder $userOrder): self
+    {
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserOrder(UserOrder $userOrder): self
+    {
+        if ($this->userOrders->removeElement($userOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($userOrder->getClient() === $this) {
+                $userOrder->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invitation[]
+     */
+    public function getInvitationsCreated(): Collection
+    {
+        return $this->invitationsCreated;
+    }
+
+    public function addInvitationsCreated(Invitation $invitationsCreated): self
+    {
+        if (!$this->invitationsCreated->contains($invitationsCreated)) {
+            $this->invitationsCreated[] = $invitationsCreated;
+            $invitationsCreated->setSentBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationsCreated(Invitation $invitationsCreated): self
+    {
+        if ($this->invitationsCreated->removeElement($invitationsCreated)) {
+            // set the owning side to null (unless already changed)
+            if ($invitationsCreated->getSentBy() === $this) {
+                $invitationsCreated->setSentBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|invitation[]
+     */
+    public function getInvitationsReceived(): Collection
+    {
+        return $this->invitationsReceived;
+    }
+
+    public function addInvitationsReceived(invitation $invitationsReceived): self
+    {
+        if (!$this->invitationsReceived->contains($invitationsReceived)) {
+            $this->invitationsReceived[] = $invitationsReceived;
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationsReceived(invitation $invitationsReceived): self
+    {
+        $this->invitationsReceived->removeElement($invitationsReceived);
+
+        return $this;
+    }
 
 }

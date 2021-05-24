@@ -2,20 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\UserInvoiceRepository;
+use App\Repository\UserOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Product;
-use App\Entity\User;
-
 
 /**
- * @ApiResource()
- * @ORM\Entity(repositoryClass=UserInvoiceRepository::class)
+ * @ORM\Entity(repositoryClass=UserOrderRepository::class)
  */
-class UserInvoice
+class UserOrder
 {
     /**
      * @ORM\Id
@@ -25,34 +20,54 @@ class UserInvoice
     private $id;
 
     /**
+     * @ORM\OneToOne(targetEntity=QrCode::class, inversedBy="userOrder", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $QrCode;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=user::class, inversedBy="userInvoices")
+     * @ORM\ManyToOne(targetEntity=user::class, inversedBy="userOrders")
      * @ORM\JoinColumn(nullable=false)
      */
     private $client;
 
     /**
-     * @ORM\ManyToMany(targetEntity=product::class)
+     * @ORM\ManyToOne(targetEntity=bar::class, inversedBy="userOrders")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $products;
+    private $bar;
 
     /**
-     * @ORM\Column(type="decimal", precision=7, scale=2)
+     * @ORM\ManyToMany(targetEntity=product::class, inversedBy="userOrders")
      */
-    private $price;
+    private $products;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getQrCode(): ?QrCode
+    {
+        return $this->QrCode;
+    }
+
+    public function setQrCode(QrCode $QrCode): self
+    {
+        $this->QrCode = $QrCode;
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
@@ -75,6 +90,18 @@ class UserInvoice
     public function setClient(?user $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getBar(): ?bar
+    {
+        return $this->bar;
+    }
+
+    public function setBar(?bar $bar): self
+    {
+        $this->bar = $bar;
 
         return $this;
     }
@@ -103,15 +130,4 @@ class UserInvoice
         return $this;
     }
 
-    public function getPrice(): ?string
-    {
-        return $this->price;
-    }
-
-    public function setPrice(string $price): self
-    {
-        $this->price = $price;
-
-        return $this;
-    }
 }

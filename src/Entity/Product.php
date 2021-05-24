@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +40,16 @@ class Product
      * @ORM\Column(type="string", length=255)
      */
     private $description;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=UserOrder::class, mappedBy="products")
+     */
+    private $userOrders;
+
+    public function __construct()
+    {
+        $this->userOrders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -88,6 +100,33 @@ class Product
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserOrder[]
+     */
+    public function getUserOrders(): Collection
+    {
+        return $this->userOrders;
+    }
+
+    public function addUserOrder(UserOrder $userOrder): self
+    {
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserOrder(UserOrder $userOrder): self
+    {
+        if ($this->userOrders->removeElement($userOrder)) {
+            $userOrder->removeProduct($this);
+        }
 
         return $this;
     }

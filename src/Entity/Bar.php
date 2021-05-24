@@ -57,9 +57,15 @@ class Bar
      */
     private $barGroups;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="bar", orphanRemoval=true)
+     */
+    private $userOrders;
+
     public function __construct()
     {
         $this->barGroups = new ArrayCollection();
+        $this->userOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +169,36 @@ class Bar
             // set the owning side to null (unless already changed)
             if ($barGroup->getBar() === $this) {
                 $barGroup->setBar(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserOrder[]
+     */
+    public function getUserOrders(): Collection
+    {
+        return $this->userOrders;
+    }
+
+    public function addUserOrder(UserOrder $userOrder): self
+    {
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->setBar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserOrder(UserOrder $userOrder): self
+    {
+        if ($this->userOrders->removeElement($userOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($userOrder->getBar() === $this) {
+                $userOrder->setBar(null);
             }
         }
 
