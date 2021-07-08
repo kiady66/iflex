@@ -1,22 +1,22 @@
 # iFlex
 
-**iFlex est..................**
+**iFlex est un web service qui a pour objectif de permettre à des groupes de personnes, par exemple des membres d’une entreprise de se créer facilement leur application de messagerie interne et se répartir dans les salons. Les utilisateurs s’identifient grâce à un token qu’ils peuvent obtenir en envoyant leurs nom d’utilisateur et leur mot de passe.**
 
 ### Les pré-requis : 
 
 <ul>
-<li>php version 8.0 et plus</li>
+<li>php (version 8.0 ou plus) installé</li>
 <li>Extension gd de php activée</li>
 <li>Extension pdo_sql de php activée</li>
 <li>MySql Server installé</li>
-<li>Installer composer</li>
+<li>Composer installé</li>
 </ul>
 
 ### Les commandes a exécutées :
 
 <p>Ouvrir un terminal et se mettre dans la racine du dossier du web service, ensuite executer les commandes suivantes:</p>
 
-```php
+```
 composer install
 php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load
@@ -56,6 +56,7 @@ Vous obtiendrez une réponse de ce genre :
 
 Ensuite prendre le token dans la réponse pour pouvoir avoir l’autorisation d'accéder aux messages. Dans la documentation de l’API, cliquez sur Authorize et coller “Bearer ” suivi du token dans le pop up : 
 
-**INSERER PHOTO**
+![alt text](https://github.com/kiady66/iflex/tree/main/Images/api.png "API")
+
 
 Vous pouvez directement tester les requêtes en cliquant sur “try it out”.
